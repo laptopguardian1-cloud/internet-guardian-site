@@ -78,6 +78,29 @@
     font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600; font-size: 0.95rem;
   }
 
+  /* ---------- family switcher: the three Guardian tools, top right ---------- */
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px 16px; flex-wrap: wrap; }
+  .guardians { display: flex; gap: 8px; align-items: center; margin-left: auto; }
+  .gicon {
+    width: 34px; height: 34px; border-radius: 50%; box-sizing: border-box;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid currentColor;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600; font-size: 0.95rem;
+    text-decoration: none; line-height: 1;
+    transition: transform .12s ease;
+  }
+  .gicon.l { background: #25774A; color: #FFFFFF; }
+  .gicon.m { background: #FFC400; color: #16150F; }
+  .gicon.i { background: #4DB3FF; color: #16150F; }
+  a.gicon:hover { transform: translateY(-2px); }
+  .gicon.current { box-shadow: 0 0 0 3px #16150F; cursor: default; }
+  @media (prefers-reduced-motion: reduce) { a.gicon { transition: none; } a.gicon:hover { transform: none; } }
+  @media (max-width: 420px) {
+    .gicon { width: 30px; height: 30px; font-size: 0.85rem; }
+    .guardians { gap: 6px; }
+    .topbar .wordmark { font-size: 1rem; }
+  }
+
   .hero-grid { display: grid; gap: 36px; padding: 20px 0 56px; }
   .hero h1 {
     font-size: clamp(2rem, 6vw, 3rem);
@@ -194,7 +217,7 @@
   footer { padding: 40px 0 60px; border-top: 2px dashed var(--line); }
   .contact { background: var(--soft); border-radius: 10px; padding: 20px 24px; border: 1px solid var(--line); }
   .contact p { margin: 4px 0; }
-  .contact a.mail { font-weight: 600; }
+  .contact a.mail { font-weight: 600;  overflow-wrap: anywhere; }
   .contact .btn { margin-top: 10px; background: var(--accent); color: #16150f; }
   .family { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 24px; }
   .family a, .family span { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.95rem; text-decoration: none; }
@@ -223,6 +246,11 @@
   <div class="wrap wide">
     <div class="topbar">
       <div class="wordmark"><span class="badge">I</span>Internet Guardian</div>
+      <nav class="guardians" aria-label="The Guardian tools">
+        <a class="gicon l" href="https://laptopguardian1-cloud.github.io/laptop-guardian-site/" title="Laptop Guardian" aria-label="Laptop Guardian">L</a>
+        <a class="gicon m" href="https://laptopguardian1-cloud.github.io/malware-guardian-site/" title="Malware Guardian" aria-label="Malware Guardian">M</a>
+        <span class="gicon i current" aria-current="page" title="Internet Guardian (this page)" aria-label="Internet Guardian (this page)">I</span>
+      </nav>
     </div>
 
     <div class="hero hero-grid">
