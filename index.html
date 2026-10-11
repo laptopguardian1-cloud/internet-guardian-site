@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Internet Guardian - No internet? Plug. Scan. Fix.</title>
+<meta name="description" content="Plug in the Internet Guardian USB, double-click one file, and find out why the internet is not working. It fixes the common causes safely: backup first, every fix tested, undo available.">
+<meta name="theme-color" content="#4DB3FF">
+<meta property="og:title" content="Internet Guardian - No internet? Plug. Scan. Fix.">
+<meta property="og:description" content="A plug-and-play USB tool that finds why a Windows laptop has no internet and fixes the common causes. Ready in about a minute.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%234DB3FF'/%3E%3Cpath d='M21 33l8 8 15-17' fill='none' stroke='%2316150F' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #16150f;
+    --paper: #ffffff;
+    --soft: #f7f5ec;
+    --line: #d9d3b6;
+    --accent: #4db3ff;
+    --muted: #55524a;
+    --safe: #1e7e34;
+    --safe-bg: #e6f4ea;
+    --warn: #8a5a00;
+    --warn-bg: #fff3cd;
+    --risk: #b3261e;
+    --risk-bg: #fde8e6;
+    --max-width: 720px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #f4f2e8;
+      --paper: #14130e;
+      --soft: #1d1c15;
+      --line: #4a4733;
+      --muted: #b9b5a4;
+      --safe: #6fd388;
+      --safe-bg: #14301b;
+      --warn: #ffd34d;
+      --warn-bg: #3a2f08;
+      --risk: #ff8f87;
+      --risk-bg: #3b1816;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+  p { margin: 0 0 1em; }
+
+  .wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+  .wrap.wide { max-width: 980px; }
+
+  /* ---------- header + hero: the accent band ---------- */
+  .band { background: var(--accent); color: #16150f; border-bottom: 2px dashed #16150f; }
+  .band :focus-visible { outline-color: #16150f; }
+
+  .topbar { padding: 20px 0; }
+  .wordmark { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.15rem; letter-spacing: -0.01em; }
+  .wordmark .badge {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: #16150f; color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600; font-size: 0.95rem;
+  }
+
+  .hero-grid { display: grid; gap: 36px; padding: 20px 0 56px; }
+  .hero h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
+    line-height: 1.12; font-weight: 700; letter-spacing: -0.02em;
+    margin: 0 0 16px 0; max-width: 15ch;
+  }
+  .hero p.sub { font-size: 1.1rem; max-width: 46ch; margin: 0 0 28px 0; }
+
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 48px; padding: 0 22px; border-radius: 6px;
+    font: inherit; font-weight: 600; font-size: 0.98rem; text-decoration: none;
+    border: 2px solid #16150f; cursor: pointer;
+  }
+  .btn-primary { background: #16150f; color: var(--accent); }
+  .btn-secondary { background: transparent; color: #16150f; }
+
+  /* sample certificate: the one memorable element */
+  .cert {
+    background: #fffdf3; color: #16150f; border: 1px solid #b8860b; padding: 8px; border-radius: 4px;
+    width: 100%; max-width: 400px; justify-self: center;
+    box-shadow: 6px 6px 0 #16150f; transform: rotate(1.2deg);
+  }
+  .cert-in { border: 3px double #b8860b; padding: 22px 18px; text-align: center; }
+  .cert-brand { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600; font-size: .78rem; letter-spacing: .16em; color: #8a6500; }
+  .cert-title { font-weight: 700; font-size: 1.05rem; margin: 6px 0 12px; }
+  .cert-machine { font-weight: 700; font-size: 1.15rem; }
+  .cert-small { font-size: .82rem; color: #55524a; margin: 2px 0 0; }
+  .cert-score { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 3.2rem; font-weight: 600; line-height: 1; margin-top: 12px; color: #1e7e34; }
+  .cert-score span { font-size: 1.05rem; color: #777; font-weight: 500; }
+  .cert-status { font-weight: 700; letter-spacing: .12em; color: #1e7e34; margin-bottom: 8px; }
+  .cert-tag { display: inline-block; margin-top: 12px; font-size: .75rem; color: #6a6652; border-top: 1px dashed #d9cf9d; padding-top: 8px; }
+
+  /* ---------- sections, joined by the perforation line ---------- */
+  main > section { padding: 56px 0; }
+  main > section + section { border-top: 2px dashed var(--line); }
+
+  h2.section-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; margin: 0 0 8px 0; }
+  p.section-lede { color: var(--muted); margin: 0 0 28px 0; max-width: 52ch; }
+
+  /* video slots */
+  .video-slot {
+    aspect-ratio: 16/9; width: 100%;
+    border: 2px dashed var(--line); border-radius: 10px;
+    background: repeating-linear-gradient(135deg, var(--soft), var(--soft) 10px, transparent 10px, transparent 20px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; color: var(--muted); gap: 6px; padding: 20px; overflow: hidden;
+  }
+  .video-slot .play-icon {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--accent); color: #16150f;
+    display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 6px;
+  }
+  .video-slot .label { font-weight: 600; color: var(--ink); }
+  .video-slot .note { font-size: 0.85rem; }
+  .video-slot.live { padding: 0; border-style: solid; background: #000; }
+  .video-slot iframe, .video-slot video { width: 100%; height: 100%; border: 0; display: block; }
+
+  /* how it works: a real sequence, so numbers are right */
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 20px; }
+  .steps li { display: flex; gap: 16px; align-items: flex-start; }
+  .steps .num {
+    flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+    background: var(--accent); color: #16150f;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.95rem;
+  }
+  .steps h3 { margin: 4px 0 4px 0; font-size: 1.05rem; }
+  .steps p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+  /* what it checks: ticket-stub card */
+  .checklist { background: var(--paper); border: 2px dashed var(--line); border-radius: 10px; padding: 8px 24px 24px; }
+  .checklist .sample-note { color: var(--muted); font-size: 0.85rem; margin: 14px 0 4px; }
+  .checklist ul { list-style: none; margin: 0; padding: 0; }
+  .checklist li { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 14px 0; border-bottom: 1px dashed var(--line); }
+  .checklist li:last-child { border-bottom: 0; }
+  .item-name { font-weight: 600; display: block; }
+  .item-desc { color: var(--muted); font-size: 0.93rem; display: block; margin-top: 2px; }
+  .tag {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.8rem; font-weight: 600;
+    padding: 3px 10px; border-radius: 4px; background: var(--safe); color: #fff; white-space: nowrap; margin-top: 2px;
+  }
+  .checklist.plain li { justify-content: flex-start; }
+  .timing { margin-top: 6px; padding-top: 18px; border-top: 2px dashed var(--line); color: var(--muted); font-size: 0.92rem; }
+
+  /* result words */
+  .verdicts { display: grid; gap: 12px; }
+  .verdict { padding: 16px 18px; border-radius: 10px; border-left: 8px solid; }
+  .verdict b { display: block; font-size: 1.1rem; margin-bottom: 2px; }
+  .verdict.safe { background: var(--safe-bg); border-color: var(--safe); }
+  .verdict.safe b { color: var(--safe); }
+  .verdict.caution { background: var(--warn-bg); border-color: #e0a800; }
+  .verdict.caution b { color: var(--warn); }
+  .verdict.risk { background: var(--risk-bg); border-color: var(--risk); }
+  .verdict.risk b { color: var(--risk); }
+  .note { margin-top: 20px; padding: 16px 18px; background: var(--soft); border-radius: 10px; font-size: .95rem; }
+
+  /* promise */
+  .two { display: grid; gap: 28px; }
+  .two h3 { font-size: 1.15rem; margin: 0; }
+  .two ul { margin: 12px 0 0; padding-left: 1.2em; }
+  .two li { margin-bottom: 8px; }
+
+  .who { display: grid; gap: 20px; }
+  .who h3 { margin: 0 0 4px 0; font-size: 1.05rem; }
+  .who p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+  details { border-bottom: 1px dashed var(--line); }
+  summary { cursor: pointer; font-weight: 600; padding: 14px 0; }
+  details p { color: var(--muted); margin: 0 0 16px; font-size: 0.97rem; }
+
+  /* footer */
+  footer { padding: 40px 0 60px; border-top: 2px dashed var(--line); }
+  .contact { background: var(--soft); border-radius: 10px; padding: 20px 24px; border: 1px solid var(--line); }
+  .contact p { margin: 4px 0; }
+  .contact a.mail { font-weight: 600; }
+  .contact .btn { margin-top: 10px; background: var(--accent); color: #16150f; }
+  .family { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 24px; }
+  .family a, .family span { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.95rem; text-decoration: none; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+  .dot.g { background: #2e8b57; }
+  .dot.y { background: #ffc400; box-shadow: 0 0 0 1px #8a6500; }
+  .dot.b { background: #4db3ff; box-shadow: 0 0 0 1px #1b5f9e; }
+  .fine-print { margin-top: 20px; font-size: 0.85rem; color: var(--muted); }
+
+  @media (min-width: 800px) {
+    .hero-grid { grid-template-columns: 1.15fr .85fr; align-items: center; padding-bottom: 72px; }
+    .verdicts { grid-template-columns: repeat(3, 1fr); }
+    .two { grid-template-columns: 1fr 1fr; gap: 48px; }
+    .who { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 480px) {
+    main > section { padding: 40px 0; }
+    .cta-row { flex-direction: column; }
+    .checklist { padding: 4px 16px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="band">
+  <div class="wrap wide">
+    <div class="topbar">
+      <div class="wordmark"><span class="badge">I</span>Internet Guardian</div>
+    </div>
+
+    <div class="hero hero-grid">
+      <div>
+        <h1>No internet? Plug. Scan. Fix.</h1>
+        <p class="sub">Internet Guardian is a plug-and-play USB tool for Windows laptops. It finds out why the internet isn't working, fixes the common causes for you, and gives you a report you can read &mdash; no technical knowledge needed.</p>
+        <div class="cta-row">
+          <a href="#how" class="btn btn-primary">See how it works</a>
+          <a href="#contact" class="btn btn-secondary">Get Internet Guardian</a>
+        </div>
+      </div>
+
+      <aside class="cert" aria-label="Example certificate">
+        <div class="cert-in">
+          <div class="cert-brand">INTERNET GUARDIAN</div>
+          <div class="cert-title">Certificate of Internet Health</div>
+          <div class="cert-machine">LAPTOP-EXAMPLE</div>
+          <p class="cert-small">Serial No. 5CD1234XYZ</p>
+          <div class="cert-score">100<span> / 100</span></div>
+          <div class="cert-status">HEALTHY</div>
+          <p class="cert-small">Connected via: Wi-Fi</p>
+          <p class="cert-small">Fixed: unreachable proxy, wrong clock</p>
+          <p class="cert-small">Certificate ID: IG-20261004-001</p>
+          <span class="cert-tag">Example only. Each real certificate is tied to the laptop it was made on.</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- OPTIONAL "why" clip. Off by default: turn on in the VIDEOS settings at the bottom of this file. -->
+<section id="why" data-video="why" hidden>
+  <div class="wrap">
+    <h2 class="section-title">Why a USB for the internet?</h2>
+    <p class="section-lede">When the internet is down, you can't download a fix. This one is already in your hand.</p>
+    <div class="video-slot" data-slot>
+      <div class="play-icon">&#9654;</div>
+      <div class="label">"Why Internet Guardian" video</div>
+      <div class="note">~35 second clip &mdash; coming soon</div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <h2 class="section-title">How it works</h2>
+    <p class="section-lede">Three steps. No installation, no account, and the internet doesn't need to be working.</p>
+    <ol class="steps">
+      <li>
+        <span class="num">1</span>
+        <span>
+          <h3>Plug in the USB</h3>
+          <p>Insert it into the Windows laptop that has the internet problem.</p>
+        </span>
+      </li>
+      <li>
+        <span class="num">2</span>
+        <span>
+          <h3>Double-click "START-HERE"</h3>
+          <p>Open the USB drive and run it. The check takes about a minute and changes nothing.</p>
+        </span>
+      </li>
+      <li>
+        <span class="num">3</span>
+        <span>
+          <h3>Say Yes to fix, then read your report</h3>
+          <p>If Internet Guardian can fix something safely, it lists exactly what it will do and asks first. Windows asks for Administrator permission only at that point. When it finishes, one report opens in your browser and a copy is saved on the USB.</p>
+        </span>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section id="tutorial" data-video="tutorial">
+  <div class="wrap">
+    <h2 class="section-title">Full tutorial</h2>
+    <p class="section-lede">Prefer to watch? This walkthrough also shows the warnings you may see and exactly what to click.</p>
+    <div class="video-slot" data-slot>
+      <div class="play-icon">&#9654;</div>
+      <div class="label">"How to Use Internet Guardian" tutorial</div>
+      <div class="note">~90 second walkthrough &mdash; coming soon</div>
+    </div>
+  </div>
+</section>
+
+<section id="checks">
+  <div class="wrap">
+    <h2 class="section-title">What it checks</h2>
+    <p class="section-lede">Ten checks, each ending in a clear result so you can see exactly where the connection lost points.</p>
+    <div class="checklist">
+      <p class="sample-note">Example: how a healthy connection looks.</p>
+      <ul>
+        <li><span><span class="item-name">Network adapters</span><span class="item-desc">Is the Wi-Fi or cable connection switched on? Is airplane mode on?</span></span><span class="tag">OK</span></li>
+        <li><span><span class="item-name">IP address and router</span><span class="item-desc">Did the router give this laptop an address, and is the router answering?</span></span><span class="tag">OK</span></li>
+        <li><span><span class="item-name">DNS name resolution</span><span class="item-desc">Can the laptop turn website names into addresses?</span></span><span class="tag">OK</span></li>
+        <li><span><span class="item-name">Internet connection</span><span class="item-desc">Does the internet really work? Checks delay, lost data and sign-in pages (hotel and caf&eacute; Wi-Fi).</span></span><span class="tag">OK</span></li>
+        <li><span><span class="item-name">Proxy settings</span><span class="item-desc">Is a proxy set that doesn't answer and blocks websites?</span></span><span class="tag">OK</span></li>
+        <li><span><span class="item-name">Network services</span><span class="item-desc">Are the Windows services the connection depends on running?</span></span><span class="tag">OK</span></li>
+        <li><span><span class="item-name">Wi-Fi signal</span><span class="item-desc">Is the signal strong enough to be stable?</span></span><span class="tag">OK</span></li>
+        <li><span><span class="item-name">VPN and virtual adapters</span><span class="item-desc">Is a VPN or a leftover adapter getting in the way?</span></span><span class="tag">OK</span></li>
+        <li><span><span class="item-name">Computer clock</span><span class="item-desc">A wrong date breaks secure websites, even when the internet works.</span></span><span class="tag">OK</span></li>
+        <li><span><span class="item-name">Hosts file</span><span class="item-desc">Have sites like Google been quietly redirected or blocked?</span></span><span class="tag">OK</span></li>
+      </ul>
+      <div class="timing">Takes about a minute, start to finish.</div>
+    </div>
+  </div>
+</section>
+
+<section id="fixes">
+  <div class="wrap">
+    <h2 class="section-title">What it can fix</h2>
+    <p class="section-lede">Only common, safe causes. It always asks first, saves a backup, tests each fix, and can undo it.</p>
+    <div class="checklist plain">
+      <ul>
+        <li><span><span class="item-name">Switch on a disabled network adapter</span><span class="item-desc">When nothing is connected because Wi-Fi or Ethernet was turned off.</span></span></li>
+        <li><span><span class="item-name">Start stopped network services</span><span class="item-desc">The Windows services that hand out addresses and detect the connection.</span></span></li>
+        <li><span><span class="item-name">Ask the router for a new address</span><span class="item-desc">When the laptop never received a usable address.</span></span></li>
+        <li><span><span class="item-name">Turn off a proxy that isn't answering</span><span class="item-desc">A working proxy is never touched, because a workplace may need it.</span></span></li>
+        <li><span><span class="item-name">Correct a wrong clock</span><span class="item-desc">Syncs the date and time so secure websites load again.</span></span></li>
+        <li><span><span class="item-name">Remove suspicious lines from the hosts file</span><span class="item-desc">A copy of the original file is kept. Never done on computers joined to a work or school domain.</span></span></li>
+        <li><span><span class="item-name">Clear the DNS cache and, if needed, use public DNS</span><span class="item-desc">Only when your DNS server has stopped answering but public DNS works. Never on computers joined to a work or school domain.</span></span></li>
+      </ul>
+    </div>
+    <p class="note">Rarely, a deeper fix is needed (resetting Winsock or the TCP/IP stack). Internet Guardian offers it only when the safe fixes didn't work, tells you first that it needs a restart and can't be undone, and checks the result after the restart.</p>
+  </div>
+</section>
+
+<section id="result">
+  <div class="wrap">
+    <h2 class="section-title">Your result in one word</h2>
+    <p class="section-lede">A score out of 100 and a status you can understand at a glance.</p>
+    <div class="verdicts">
+      <div class="verdict safe"><b>HEALTHY</b>The connection looks good.</div>
+      <div class="verdict caution"><b>ATTENTION</b>Something deserves attention, such as a weak signal or a proxy.</div>
+      <div class="verdict risk"><b>CRITICAL</b>The internet can't be reached, or there are serious problems.</div>
+    </div>
+    <p class="note">The score describes the connection at the moment of the check. Problems outside the laptop &mdash; the router, the modem or the internet provider &mdash; can change it, and the report says so when that looks like the cause.</p>
+  </div>
+</section>
+
+<section id="promise">
+  <div class="wrap">
+    <div class="two">
+      <div>
+        <h3>What Internet Guardian does</h3>
+        <ul>
+          <li>Finds the cause and explains every point lost</li>
+          <li>Works even when the internet is down</li>
+          <li>Asks before every fix and saves a backup first</li>
+          <li>Tests each fix, and can undo it</li>
+          <li>Saves the report and certificate on the USB</li>
+        </ul>
+      </div>
+      <div>
+        <h3>What it never does</h3>
+        <ul>
+          <li>Change anything without asking</li>
+          <li>Send your files or results to anyone</li>
+          <li>Need an account</li>
+          <li>Fix problems at the internet provider or in the router hardware</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">To test the connection it makes a few small requests to public servers, such as Microsoft's connection-test page and public DNS. No personal information is sent.</p>
+  </div>
+</section>
+
+<section id="who">
+  <div class="wrap">
+    <h2 class="section-title">Made for people who need it working</h2>
+    <p class="section-lede">No lectures, no jargon.</p>
+    <div class="who">
+      <div>
+        <h3>Buying a second-hand laptop</h3>
+        <p>Check the connection and the clock before you pay. A flat BIOS battery shows up as a wrong date.</p>
+      </div>
+      <div>
+        <h3>NGOs, schools, offices and caf&eacute;s</h3>
+        <p>Clear the everyday "no internet" calls in a minute, without waiting for a technician.</p>
+      </div>
+      <div>
+        <h3>Repair shops and sellers</h3>
+        <p>Hand customers a before-and-after report and a certificate.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <h2 class="section-title">Questions people ask</h2>
+    <p class="section-lede">The things that surprise people the first time.</p>
+
+    <details>
+      <summary>Windows or my antivirus shows a warning. Is something wrong?</summary>
+      <p>No. Internet Guardian is a new tool and isn't digitally signed yet, so some Windows and antivirus warnings can appear. It starts from plain-text scripts you can open and read in Notepad. If Windows says "Windows protected your PC", click "More info", then "Run anyway". If an antivirus asks, choose "Allow". The check itself changes nothing.</p>
+    </details>
+    <details>
+      <summary>Why does it ask for Administrator permission?</summary>
+      <p>Only to fix things. The check runs without it. When you say Yes to a fix, Windows asks for permission and a separate window does the repair.</p>
+    </details>
+    <details>
+      <summary>Will it restart my laptop?</summary>
+      <p>Only the rare, deeper fixes need a restart. You get a clear warning first and you choose when. After restarting, run Internet Guardian again and the report tells you whether the fix worked.</p>
+    </details>
+    <details>
+      <summary>Can I undo a fix?</summary>
+      <p>Yes. Double-click "UNDO-LAST-FIX" on the USB and your saved settings are put back. The clock correction and the deeper resets can't be undone.</p>
+    </details>
+    <details>
+      <summary>What if the problem is my internet provider?</summary>
+      <p>The report says when the laptop looks fine and the problem is beyond it, so you know to restart the router or call the provider.</p>
+    </details>
+    <details>
+      <summary>Does it need the internet?</summary>
+      <p>No. It works when the connection is down, which is when it is most useful. When the internet is up, it makes a few small test connections.</p>
+    </details>
+    <details>
+      <summary>Can I copy it to another USB stick?</summary>
+      <p>Each Internet Guardian is licensed to its own USB stick and won't start from a different drive.</p>
+    </details>
+    <details>
+      <summary>Which Windows versions does it support?</summary>
+      <p>Windows 10 and 11. Windows in S mode, and locked-down work laptops that block scripts, aren't supported.</p>
+    </details>
+  </div>
+</section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="contact">
+      <p><strong>Questions or want an Internet Guardian USB?</strong></p>
+      <p>Internet Guardian</p>
+      <p id="contact-links"></p>
+    </div>
+
+    <div class="family">
+      <a href="https://laptopguardian1-cloud.github.io/laptop-guardian-site/"><span class="dot g"></span>Laptop Guardian</a>
+      <a href="https://laptopguardian1-cloud.github.io/malware-guardian-site/"><span class="dot y"></span>Malware Guardian</a>
+      <span><span class="dot b"></span>Internet Guardian</span>
+    </div>
+
+    <p class="fine-print">Internet Guardian diagnoses and repairs common Windows network settings problems. It can't fix problems at the internet provider, in the router hardware or on a website, and it doesn't guarantee a connection will stay healthy.</p>
+  </div>
+</footer>
+
+<script>
+  // =====================  EDIT THESE SETTINGS, THEN RE-UPLOAD  =====================
+
+  // How people contact you.
+  // WhatsApp: country code + number, digits only (example: 263771234567). Leave "" to hide.
+  // Email: shown as a link. Leave "" to hide.
+  var CONTACT = { whatsapp: "", email: "laptopguardian1@gmail.com" };
+
+  // The two video sections.
+  //   show: true  -> the section appears. false -> it is hidden completely.
+  //   url:  ""    -> shows the "coming soon" placeholder.
+  //         YouTube: use the EMBED link, like "https://www.youtube.com/embed/VIDEOID"
+  //         Your own file: upload an .mp4 next to index.html and write its name, like "tutorial.mp4"
+  var VIDEOS = {
+    why:      { show: false, url: "" },
+    tutorial: { show: true,  url: "" }
+  };
+
+  // ==================================================================================
+
+  (function () {
+    // ----- videos -----
+    Object.keys(VIDEOS).forEach(function (key) {
+      var section = document.querySelector('[data-video="' + key + '"]');
+      if (!section) { return; }
+      var cfg = VIDEOS[key];
+      if (!cfg.show) { section.hidden = true; return; }
+      section.hidden = false;
+      if (!cfg.url) { return; }
+
+      var slot = section.querySelector("[data-slot]");
+      slot.className = "video-slot live";
+      slot.innerHTML = "";
+      var el;
+      if (/\.(mp4|webm)$/i.test(cfg.url)) {
+        el = document.createElement("video");
+        el.controls = true;
+        el.preload = "metadata";
+        el.src = cfg.url;
+      } else {
+        el = document.createElement("iframe");
+        el.src = cfg.url;
+        el.title = key === "why" ? "Why Internet Guardian" : "How to use Internet Guardian";
+        el.allow = "accelerometer; encrypted-media; gyroscope; picture-in-picture";
+        el.allowFullscreen = true;
+        el.loading = "lazy";
+      }
+      slot.appendChild(el);
+    });
+
+    // ----- contact -----
+    var box = document.getElementById("contact-links");
+    var count = 0;
+
+    if (CONTACT.email) {
+      var a = document.createElement("a");
+      a.className = "mail";
+      a.href = "mailto:" + CONTACT.email + "?subject=" + encodeURIComponent("Internet Guardian");
+      a.textContent = CONTACT.email;
+      box.appendChild(a);
+      count++;
+    }
+    var wa = (CONTACT.whatsapp || "").replace(/\D/g, "");
+    if (wa) {
+      if (count > 0) { box.appendChild(document.createElement("br")); }
+      var b = document.createElement("a");
+      b.className = "btn";
+      b.href = "https://wa.me/" + wa + "?text=" + encodeURIComponent("Hello, I would like to know more about Internet Guardian.");
+      b.textContent = "Message us on WhatsApp";
+      box.appendChild(b);
+      count++;
+    }
+    if (count === 0) { box.textContent = "Ordering details are coming soon."; }
+  })();
+</script>
+</body>
+</html>
