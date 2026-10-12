@@ -119,21 +119,19 @@
   .btn-primary { background: #16150f; color: var(--accent); }
   .btn-secondary { background: transparent; color: #16150f; }
 
-  /* sample certificate: the one memorable element */
-  .cert {
-    background: #fffdf3; color: #16150f; border: 1px solid #b8860b; padding: 8px; border-radius: 4px;
-    width: 100%; max-width: 400px; justify-self: center;
+  /* example report: ticket stub (same device as the Laptop Guardian page) */
+  .stub {
+    background: #ffffff; color: #16150f; border: 2px dashed #7fb3d9; border-radius: 10px;
+    width: 100%; max-width: 380px; justify-self: center; padding: 20px 20px 16px;
     box-shadow: 6px 6px 0 #16150f; transform: rotate(1.2deg);
   }
-  .cert-in { border: 3px double #b8860b; padding: 22px 18px; text-align: center; }
-  .cert-brand { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600; font-size: .78rem; letter-spacing: .16em; color: #8a6500; }
-  .cert-title { font-weight: 700; font-size: 1.05rem; margin: 6px 0 12px; }
-  .cert-machine { font-weight: 700; font-size: 1.15rem; }
-  .cert-small { font-size: .82rem; color: #55524a; margin: 2px 0 0; }
-  .cert-score { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 3.2rem; font-weight: 600; line-height: 1; margin-top: 12px; color: #1e7e34; }
-  .cert-score span { font-size: 1.05rem; color: #777; font-weight: 500; }
-  .cert-status { font-weight: 700; letter-spacing: .12em; color: #1e7e34; margin-bottom: 8px; }
-  .cert-tag { display: inline-block; margin-top: 12px; font-size: .75rem; color: #6a6652; border-top: 1px dashed #d9cf9d; padding-top: 8px; }
+  .stub-brand { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600; font-size: .78rem; letter-spacing: .16em; color: #1b5f9e; }
+  .stub-title { font-weight: 700; font-size: 1.1rem; margin: 4px 0 12px; }
+  .stub ul { list-style: none; margin: 0; padding: 0; }
+  .stub li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 0; border-top: 1px dashed #cfe0ee; font-size: .93rem; font-weight: 500; }
+  .stub .tag { margin: 0; }
+  .stub .tag.fixed { background: #1b5f9e; }
+  .stub-note { margin: 12px 0 0; padding-top: 10px; border-top: 2px dashed #cfe0ee; font-size: .75rem; color: #4a5c68; }
 
   /* ---------- sections, joined by the perforation line ---------- */
   main > section { padding: 56px 0; }
@@ -263,19 +261,18 @@
         </div>
       </div>
 
-      <aside class="cert" aria-label="Example certificate">
-        <div class="cert-in">
-          <div class="cert-brand">INTERNET GUARDIAN</div>
-          <div class="cert-title">Certificate of Internet Health</div>
-          <div class="cert-machine">LAPTOP-EXAMPLE</div>
-          <p class="cert-small">Serial No. 5CD1234XYZ</p>
-          <div class="cert-score">100<span> / 100</span></div>
-          <div class="cert-status">HEALTHY</div>
-          <p class="cert-small">Connected via: Wi-Fi</p>
-          <p class="cert-small">Fixed: unreachable proxy, wrong clock</p>
-          <p class="cert-small">Certificate ID: IG-20261004-001</p>
-          <span class="cert-tag">Example only. Each real certificate is tied to the laptop it was made on.</span>
-        </div>
+      <aside class="stub" aria-label="Example report">
+        <div class="stub-brand">INTERNET GUARDIAN</div>
+        <div class="stub-title">Health report</div>
+        <ul>
+          <li><span>Network adapters &amp; Wi-Fi</span><span class="tag">OK</span></li>
+          <li><span>IP address &amp; router</span><span class="tag">OK</span></li>
+          <li><span>DNS name resolution</span><span class="tag">OK</span></li>
+          <li><span>Internet connection</span><span class="tag">OK</span></li>
+          <li><span>Proxy settings</span><span class="tag fixed">Fixed</span></li>
+          <li><span>Computer clock</span><span class="tag">OK</span></li>
+        </ul>
+        <p class="stub-note">Example only. Your report shows the real results for the laptop you check.</p>
       </aside>
     </div>
   </div>
